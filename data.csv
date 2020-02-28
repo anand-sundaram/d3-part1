@@ -1,5 +1,4 @@
-ID,Full Name,Age,Company
-1,Steve Jobs,64,Apple
-2,Bill Gates,64,Microsoft
-3,Sundar Pichai,47,Alphabet Inc.
-4,Jeff Bezos,56,Amazon
+cellId,propertyName,propertyColour,probability
+1,Geylang Road,red,0.1
+2,Serangoon Road,green,0.3
+3,Ang Mo Kio Station,orange,0.2
