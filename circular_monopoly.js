@@ -82,7 +82,6 @@ function mouseOver(cardData) {
 }
 
 function mouseOut(cardData) {
-    console.log("detected mouse out " + cardData);
     propertyColour.style("visibility", "hidden");
     propertyName.style("visibility", "hidden");
     propertyRents.style("visibility", "hidden");
@@ -90,11 +89,20 @@ function mouseOut(cardData) {
     property.style("visibility", "hidden");
 }
 
-d3.csv("./files/mpy_csv.csv").then(function(data) {
-    console.log(data);
+var line = d3.lineRadial()
+    		.angle(function(d) { return getAngle(d); })
+    		.radius(function(d) { return getRadius(d); });
 
+d3.csv("./files/mpy_csv.csv").then(function(data) {
+
+
+    
     // Create dummy data
     var cardData = data.filter(isPurchaseableCard);
+    for (let step = 0; step < cardData.length; step++) {
+        cardData[step]["cardIndex"] = step;
+    }
+    console.log(cardData);
 
     // Compute the position of each group on the pie:
     var pie = d3.pie()
@@ -122,6 +130,7 @@ d3.csv("./files/mpy_csv.csv").then(function(data) {
 
     createInnerDonut(svg, data_ready, 400, 550, 1);
     createInnerDonut(svg, data_ready, 250, 400, 2);
+    createProbabilityLine(svg, data_ready, 200, 250);
 });
 
 
@@ -172,6 +181,14 @@ function getProbability(cardData, donutNumber) {
 
 }
 
+function getAngle(cardData) {
+    return 2 * Math.PI * parseInt(cardData.data.value["cardIndex"]) / 28;
+}
+
+function getRadius(cardData) {
+    return (probabilities1[parseInt(cardData.data.value["Square"])]) * 50 + 200;
+}
+
 function createInnerDonut(svg, data_ready, innerRadius, outerRadius, donutNumber) {
     var arc = d3.arc()
     	.outerRadius(outerRadius)
@@ -214,3 +231,24 @@ function createInnerDonut(svg, data_ready, innerRadius, outerRadius, donutNumber
         .attr("height", 30);
 }
 
+function createProbabilityLine(svg, data_ready, innerRadius, outerRadius) {
+    var arc = d3.arc()
+    	.outerRadius(outerRadius)
+    	.innerRadius(innerRadius);
+    var completeData = [...data_ready];
+    var lastElement = {};
+    Object.assign(lastElement, completeData[0]);
+    lastElement["cardIndex"] = 28;
+    completeData.push(lastElement);
+    probabilityLine = svg
+        .selectAll('arc')
+        .data(completeData)
+        .enter();
+    probabilityLine    
+        .append('path')
+        .datum(completeData)
+        .attr("transform", "translate(" + 710 + "," + 710 + ")")
+        .attr("fill", "none")
+        .attr("stroke", "#4099ff")
+        .attr("d", line);
+}
