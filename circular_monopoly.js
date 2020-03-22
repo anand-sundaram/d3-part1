@@ -64,6 +64,9 @@ var propertyStats = d3.select("#drawhere")
     .style("visibility", "hidden");
     
 function mouseOver(cardData) {
+    if (cardData.data.value["is_label_card"]) {
+        return;
+    }
     propertyName.text(cardData.data.value["Name"]);
     propertyColour.style("fill", getColor(cardData)).style("opacity", 0.5);
     if (cardData.data.value["Rent"] != undefined) {
@@ -85,7 +88,6 @@ function mouseOver(cardData) {
         propertyRents.append("tspan").text("Rent with Hotel: " + cardData.data.value["Rent"][5]).attr("x", propertyX + propertyWidth/2).attr("dy", 20);
     }
     propertyStats.append("tspan").text("Probability of landing: " + cardData.data.value["p_landings"].toFixed(3)).attr("x", propertyX + propertyWidth/2).attr("dy", 20);
-    propertyStats.append("tspan").text("Should you buy/build?: " + (cardData.data.value["recommendation"] <= 0 ? "No" : "Yes")).attr("x", propertyX + propertyWidth/2).attr("dy", 20);
     propertyRents.style("visibility", "visible");
     propertyStats.style("visibility", "visible");
     propertyColour.style("visibility", "visible");
@@ -94,6 +96,9 @@ function mouseOver(cardData) {
 }
 
 function mouseOut(cardData) {
+    if (cardData.data.value["is_label_card"]) {
+        return;
+    }
     propertyColour.style("visibility", "hidden");
     propertyName.style("visibility", "hidden");
     propertyRents.style("visibility", "hidden");
@@ -112,6 +117,9 @@ function isPurchaseableCard(card) {
 }
 
 function getColor(cardData) {
+    if (cardData.data.value["is_label_card"]) {
+        return "White";
+    }
     var color = cardData.data.value["Color"];
     if (color == "Brown (Dark Purple)") {
         color = "Brown";
@@ -126,20 +134,36 @@ function getColor(cardData) {
 }
 
 function shouldBuy(cardData, donutNumber) {
-    if (cardData.data.value["recommendation"] <= 0) {
-        return d3.interpolateReds(1);
+    if (cardData.data.value["is_label_card"]) {
+        return "White";
     }
-    return d3.interpolateGreens(1);
+    if (cardData.data.value["strategies"][donutNumber]["recommendation"] <= 0) {
+        return d3.interpolateReds(0.7);
+    } else if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 1) {
+        return d3.interpolateGreens(0.2);
+    } else if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 2) {
+        return d3.interpolateGreens(0.4);
+    } else if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 3) {
+        return d3.interpolateGreens(0.5);
+    } else if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 4) {
+        return d3.interpolateGreens(0.6);
+    } else if (cardData.data.value["strategies"][donutNumber]["recommendation"] >= 5) {
+        return d3.interpolateGreens(0.7);
+    }
+    return d3.interpolateGreens(0.5);
 }
 
 function getHouses(cardData, donutNumber) {
-    if (cardData.data.value["recommendation"] == 1) {
+    if (cardData.data.value["is_label_card"]) {
+        return;
+    }
+    if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 1) {
         return "./files/one-home.svg";
-    } if (cardData.data.value["recommendation"] == 2) {
+    } if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 2) {
         return "./files/two-homes.svg";
-    } if (cardData.data.value["recommendation"] == 3) {
+    } if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 3) {
         return "./files/three-homes.svg";
-    } if (cardData.data.value["recommendation"] == 4) {
+    } if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 4) {
         return "./files/four-homes.svg";
     } else {
         return "";
@@ -147,24 +171,18 @@ function getHouses(cardData, donutNumber) {
 }
 
 function getHotel(cardData, donutNumber) {
-    if (cardData.data.value["recommendation"] == 5) {
+    if (cardData.data.value["is_label_card"]) {
+        return;
+    }
+    if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 5) {
         return "./files/hotel.svg";
     } else {
         return "";
     }
 }
 
-function getProbability(cardData, donutNumber) {
-    if (donutNumber == 1) {
-        return probabilities1[parseInt(cardData.data.value["Square"])];
-    } else {
-        return probabilities2[parseInt(cardData.data.value["Square"])];
-    }
-
-}
-
 function getAngle(cardData) {
-    return 2 * Math.PI * parseInt(cardData.data.value["cardIndex"]) / 28;
+    return 2 * Math.PI * parseInt(cardData.data.value["card_index"]) / 28;
 }
 
 function getRadius(cardData) {
@@ -181,12 +199,21 @@ function createInnerDonut(svg, data_ready, innerRadius, outerRadius, donutNumber
         .enter();
     houses    
         .append('path')
+        .attr('id', function(d) { return 'strategyRing' + donutNumber + "card" + d.data.value['card_index']; })
         .attr('d', arc)
         .attr("transform", "translate(" + 710 + "," + 710 + ")")
         .attr('fill', function(d) { return shouldBuy(d, donutNumber); })
         .attr("stroke", "black")
-        .style("stroke-width", "2px")
-        .style("opacity", 0.5)
+        .style("stroke-width", "1px")
+        .on("mouseover", mouseOver)
+        .on("mouseout", mouseOut);
+    houses.append("text")
+        .data(data_ready)
+        .attr("x", 5)
+        .attr("dy", 20)
+        .append("textPath") //append a textPath to the text element
+        .attr("xlink:href", function(d) { return '#strategyRing' + donutNumber + "card" + d.data.value['card_index']; })
+        .text(function (d) { return getStrategyLabelText(d, donutNumber);});
     houses
         .append("g")   
         .attr("transform", function(d) {
@@ -197,8 +224,10 @@ function createInnerDonut(svg, data_ready, innerRadius, outerRadius, donutNumber
         })
         .append("svg:image")
         .attr("xlink:href", function(d) { return getHouses(d, donutNumber); })
-        .attr("width", 80)
-        .attr("height", 80);
+        .attr("width", 70)
+        .attr("height", 70)
+        .on("mouseover", mouseOver)
+        .on("mouseout", mouseOut);
     houses
         .append("g")   
         .attr("transform", function(d) {
@@ -210,7 +239,9 @@ function createInnerDonut(svg, data_ready, innerRadius, outerRadius, donutNumber
         .append("svg:image")
         .attr("xlink:href", function(d) { return getHotel(d, donutNumber); })
         .attr("width", 30)
-        .attr("height", 30);
+        .attr("height", 30)
+        .on("mouseover", mouseOver)
+        .on("mouseout", mouseOut);
 }
 
 function createProbabilityLine(svg, data_ready, innerRadius, outerRadius) {
@@ -220,7 +251,7 @@ function createProbabilityLine(svg, data_ready, innerRadius, outerRadius) {
     var completeData = [...data_ready];
     var lastElement = {};
     Object.assign(lastElement, completeData[0]);
-    lastElement["cardIndex"] = 28;
+    lastElement["card_index"] = 28;
     completeData.push(lastElement);
     probabilityLine = svg
         .selectAll('arc')
@@ -236,67 +267,145 @@ function createProbabilityLine(svg, data_ready, innerRadius, outerRadius) {
 }
 
 var country = getParameterByName("country") == undefined ? "singapore" : getParameterByName("country");
-var strategyID = getParameterByName("strategy") == undefined ? 3 : getParameterByName("strategy");
 console.log(getParameterByName("country"));
 console.log(getParameterByName("strategy"));
 d3.json("https://monopoly-nus.appspot.com/api/locations/" + country).then( propertyData => {
-    properties = propertyData.locations;
-    d3.json("https://monopoly-nus.appspot.com/api/basic/strategy/" + strategyID).then( strategyData => {
-        strategy = strategyData.locations;
-        for (let x = 0; x < properties.length; x++) {
-            currentProperty = properties[x];
-            currentProperty["p_landings"] = strategy[x]["p_landings"];
-            currentProperty["recommendation"] = strategy[x]["recommendation"];
-            currentProperty["build_order"] = strategy[x]["build_order"];
-            currentProperty["build_cost"] = strategy[x]["build_cost"];
-            currentProperty["expected_cost"] = strategy[x]["expected_cost"];
-            currentProperty["expected_rent"] = strategy[x]["expected_rent"];
-            if (strategy[x]["p_landings"] < minProbability) {
-                minProbability = strategy[x]["p_landings"];
-            }
-            if (strategy[x]["p_landings"] > maxProbability) {
-                maxProbability = strategy[x]["p_landings"];
-            }
-        }
-        console.log("minProbability: " + minProbability);
-        console.log("maxProbability: " + maxProbability);
-        console.log(properties);
-        // Create dummy data
-        var cardData = properties.filter(isPurchaseableCard);
-        for (let step = 0; step < cardData.length; step++) {
-            cardData[step]["cardIndex"] = step;
-        }
-        console.log(cardData);
-
-        // Compute the position of each group on the pie:
-        var pie = d3.pie()
-            .value(function(d) {return 1; })
-        var data_ready = pie(d3.entries(cardData))
-
-        // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
-        svg
-            .selectAll('whatever')
-            .data(data_ready)
-            .enter()
-            .append('path')
-            .attr('d', d3.arc()
-                .innerRadius(550)         // This is the size of the donut hole
-                .outerRadius(700)
-            )
-            .attr("transform", "translate(" + 710 + "," + 710 + ")")
-            .attr('fill', getColor)
-            .attr("stroke", "black")
-            .style("stroke-width", "2px")
-            .style("opacity", 0.7)
-            .on("mouseover", mouseOver)
-            .on("mouseout", mouseOut);
-            // .on(eventObj);
-
-        createInnerDonut(svg, data_ready, 400, 550, 1);
-        // createInnerDonut(svg, data_ready, 250, 400, 2);
-        // createProbabilityLine(svg, data_ready, 200, 250);
+    d3.json("https://monopoly-nus.appspot.com/api/basic/strategy/3").then( strategy3Data => {
+        d3.json("https://monopoly-nus.appspot.com/api/basic/strategy/4").then( strategy4Data => {
+            d3.json("https://monopoly-nus.appspot.com/api/basic/strategy/5").then( strategy5Data => {
+                buildCircularChart(
+                    propertyData.locations, 
+                    [strategy3Data.locations, strategy4Data.locations, strategy5Data.locations]
+                );
+            });
+        });
     });
 });
+
+function buildCircularChart(properties, strategies) {
+    for (let x = 0; x < properties.length; x++) {
+        currentProperty = properties[x];
+        currentProperty["p_landings"] = strategies[0][x]["p_landings"];
+        currentProperty["strategies"] = []
+        for (let y = 0; y < strategies.length; y++) {
+            var strategy = {};
+            strategy["recommendation"] = strategies[y][x]["recommendation"];
+            strategy["build_order"] = strategies[y][x]["build_order"];
+            strategy["build_cost"] = strategies[y][x]["build_cost"];
+            strategy["expected_cost"] = strategies[y][x]["expected_cost"];
+            strategy["expected_rent"] = strategies[y][x]["expected_rent"];
+            currentProperty["strategies"].push(strategy);
+        }
+        if (strategies[0][x]["p_landings"] < minProbability) {
+            minProbability = strategies[0][x]["p_landings"];
+        }
+        if (strategies[0][x]["p_landings"] > maxProbability) {
+            maxProbability = strategies[0][x]["p_landings"];
+        }
+    }
+    var cardData = properties.filter(isPurchaseableCard);
+    for (let step = 0; step < cardData.length; step++) {
+        cardData[step]["card_index"] = step;
+    }
+    var labelCard = {
+        "card_index": -1,
+        "is_label_card": true,
+        "property_color_label": "Colour of Property",
+        "property_name_label": "Name of Property",
+        "strategy_labels": [
+            "3 players",
+            "4 players",
+            "5 players"
+        ]
+    }
+    cardData.unshift(labelCard);
+    console.log(cardData);
+
+    // Compute the position of each group on the pie:
+    var pie = d3.pie()
+        .value(function(d) {return 1; })
+    var data_ready = pie(d3.entries(cardData))
+
+    // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
+    var outerRing = svg
+        .selectAll('whatever')
+        .data(data_ready)
+        .enter()
+        .append('path')
+        .attr('id', function(d) { return 'outerRing' + d.data.value['card_index']; })
+        .attr('d', d3.arc()
+            .innerRadius(670)         // This is the size of the donut hole
+            .outerRadius(700)
+        )
+        .attr("transform", "translate(" + 710 + "," + 710 + ")")
+        .attr('fill', getColor)
+        .attr("stroke", "black")
+        .style("stroke-width", "1px")
+        .style("opacity", 0.5)
+        .on("mouseover", mouseOver)
+        .on("mouseout", mouseOut);
+        
+    svg.append("text")
+        .data(data_ready)
+        .attr("x", 15)
+        .attr("dy", 20)
+        .append("textPath") //append a textPath to the text element
+        .attr("xlink:href", function(d) { return '#outerRing' + d.data.value['card_index']; }) //place the ID of the path here
+        .text(getPropertyColorLabelText);
+
+    svg
+        .selectAll('whatever')
+        .data(data_ready)
+        .enter()
+        .append('path')
+        .attr('id', function(d) { return 'innerRing' + d.data.value['card_index']; })
+        .attr('d', d3.arc()
+            .innerRadius(600)         // This is the size of the donut hole
+            .outerRadius(670)
+        )
+        .attr("transform", "translate(" + 710 + "," + 710 + ")")
+        .attr('fill', "white")
+        .attr("stroke", "black")
+        .style("stroke-width", "1px")
+        .on("mouseover", mouseOver)
+        .on("mouseout", mouseOut);
+        
+    svg.append("text")
+        .data(data_ready)
+        .attr("x", 30)
+        .attr("dy", 40)
+        .append("textPath") //append a textPath to the text element
+        .attr("xlink:href", function(d) { return '#innerRing' + d.data.value['card_index']; }) //place the ID of the path here
+        .text(getStrategyText);
+
+    createInnerDonut(svg, data_ready, 500, 600, 0);
+    createInnerDonut(svg, data_ready, 400, 500, 1);
+    createInnerDonut(svg, data_ready, 300, 400, 2);
+    // createProbabilityLine(svg, data_ready, 200, 250);
+}
+
+function getPropertyColorLabelText(cardData) {
+    console.log("getPropertyColorLabelText");
+    if (cardData.data.value["is_label_card"]) {
+        console.log(cardData.data.value["property_color_label"]);
+        return cardData.data.value["property_color_label"];
+    }
+}
+
+function getStrategyLabelText(cardData, donutNumber) {
+    console.log("getStrategyLabelText");
+    if (cardData.data.value["is_label_card"]) {
+        console.log(cardData.data.value["strategy_labels"][donutNumber]);
+        return cardData.data.value["strategy_labels"][donutNumber];
+    }
+}
+
+function getStrategyText(cardData) {
+    console.log("getStrategyText");
+    if (cardData.data.value["is_label_card"]) {
+        return "Strategy For";
+    }
+}
 
 function getParameterByName(name, url) {
     if (!url) url = window.location.href;
