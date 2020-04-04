@@ -69,23 +69,39 @@ function mouseOver(cardData) {
     }
     propertyName.text(cardData.data.value["Name"]);
     propertyColour.style("fill", getColor(cardData)).style("opacity", 0.5);
-    if (cardData.data.value["Rent"] != undefined) {
-        propertyRents.append("tspan").text("Rent: " + cardData.data.value["Rent"][0]).attr("x", propertyX + propertyWidth/2).attr("dy", 20);
+    if (cardData.data.value["Type"] == "Street") {
+        if (cardData.data.value["Rent"] != undefined) {
+            propertyRents.append("tspan").text("Rent: " + cardData.data.value["Rent"][0]).attr("x", propertyX + propertyWidth/2).attr("dy", 20);
+        }
+        if (cardData.data.value["Rent"] != undefined && cardData.data.value["Rent"].length > 1) {
+            propertyRents.append("tspan").text("Rent with 1 House: " + cardData.data.value["Rent"][1]).attr("x", propertyX + propertyWidth/2).attr("dy", 20);
+        }
+        if (cardData.data.value["Rent"] != undefined && cardData.data.value["Rent"].length > 2) {
+            propertyRents.append("tspan").text("Rent with 2 Houses: " + cardData.data.value["Rent"][2]).attr("x", propertyX + propertyWidth/2).attr("dy", 20);
+        }
+        if (cardData.data.value["Rent"] != undefined && cardData.data.value["Rent"].length > 3) {
+            propertyRents.append("tspan").text("Rent with 3 Houses: " + cardData.data.value["Rent"][3]).attr("x", propertyX + propertyWidth/2).attr("dy", 20);
+        }
+        if (cardData.data.value["Rent"] != undefined && cardData.data.value["Rent"].length > 4) {
+            propertyRents.append("tspan").text("Rent with 4 Houses: " + cardData.data.value["Rent"][4]).attr("x", propertyX + propertyWidth/2).attr("dy", 20);
+        }
+        if (cardData.data.value["Rent"] != undefined && cardData.data.value["Rent"].length > 5) {
+            propertyRents.append("tspan").text("Rent with Hotel: " + cardData.data.value["Rent"][5]).attr("x", propertyX + propertyWidth/2).attr("dy", 20);
+        }
     }
-    if (cardData.data.value["Rent"] != undefined && cardData.data.value["Rent"].length > 1) {
-        propertyRents.append("tspan").text("Rent with 1 House: " + cardData.data.value["Rent"][1]).attr("x", propertyX + propertyWidth/2).attr("dy", 20);
-    }
-    if (cardData.data.value["Rent"] != undefined && cardData.data.value["Rent"].length > 2) {
-        propertyRents.append("tspan").text("Rent with 2 Houses: " + cardData.data.value["Rent"][2]).attr("x", propertyX + propertyWidth/2).attr("dy", 20);
-    }
-    if (cardData.data.value["Rent"] != undefined && cardData.data.value["Rent"].length > 3) {
-        propertyRents.append("tspan").text("Rent with 3 Houses: " + cardData.data.value["Rent"][3]).attr("x", propertyX + propertyWidth/2).attr("dy", 20);
-    }
-    if (cardData.data.value["Rent"] != undefined && cardData.data.value["Rent"].length > 4) {
-        propertyRents.append("tspan").text("Rent with 4 Houses: " + cardData.data.value["Rent"][4]).attr("x", propertyX + propertyWidth/2).attr("dy", 20);
-    }
-    if (cardData.data.value["Rent"] != undefined && cardData.data.value["Rent"].length > 5) {
-        propertyRents.append("tspan").text("Rent with Hotel: " + cardData.data.value["Rent"][5]).attr("x", propertyX + propertyWidth/2).attr("dy", 20);
+    if (cardData.data.value["Type"] == "Railroad") {
+        if (cardData.data.value["Rent"] != undefined) {
+            propertyRents.append("tspan").text("Rent: " + cardData.data.value["Rent"][0]).attr("x", propertyX + propertyWidth/2).attr("dy", 20);
+        }
+        if (cardData.data.value["Rent"] != undefined && cardData.data.value["Rent"].length > 1) {
+            propertyRents.append("tspan").text("Rent with 1 other railroad: " + cardData.data.value["Rent"][1]).attr("x", propertyX + propertyWidth/2).attr("dy", 20);
+        }
+        if (cardData.data.value["Rent"] != undefined && cardData.data.value["Rent"].length > 2) {
+            propertyRents.append("tspan").text("Rent with 2 other railroads: " + cardData.data.value["Rent"][2]).attr("x", propertyX + propertyWidth/2).attr("dy", 20);
+        }
+        if (cardData.data.value["Rent"] != undefined && cardData.data.value["Rent"].length > 3) {
+            propertyRents.append("tspan").text("Rent with all the railroads: " + cardData.data.value["Rent"][3]).attr("x", propertyX + propertyWidth/2).attr("dy", 20);
+        }
     }
     propertyStats.append("tspan").text("Probability of landing: " + cardData.data.value["p_landings"].toFixed(3)).attr("x", propertyX + propertyWidth/2).attr("dy", 20);
     propertyRents.style("visibility", "visible");
@@ -127,6 +143,8 @@ function getColor(cardData) {
         color = "Indigo";
     } else if (color == "Light Blue") {
         color = "Blue";
+    } else if (color == "Green") {
+        color = "Lawngreen";
     } else if (color == undefined || color.trim() == "") {
         color = "White";
     }
@@ -157,17 +175,33 @@ function getHouses(cardData, donutNumber) {
     if (cardData.data.value["is_label_card"]) {
         return;
     }
-    if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 1) {
-        return "./files/one-home.svg";
-    } if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 2) {
-        return "./files/two-homes.svg";
-    } if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 3) {
-        return "./files/three-homes.svg";
-    } if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 4) {
-        return "./files/four-homes.svg";
-    } else {
-        return "";
+    if (cardData.data.value["Type"] == "Street") {
+        if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 1) {
+            return "./files/one-home.svg";
+        } if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 2) {
+            return "./files/two-homes.svg";
+        } if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 3) {
+            return "./files/three-homes.svg";
+        } if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 4) {
+            return "./files/four-homes.svg";
+        } else {
+            return "";
+        }
     }
+    if (cardData.data.value["Type"] == "Railroad") {
+        if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 1) {
+            return "./files/one-train.svg";
+        } if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 2) {
+            return "./files/two-trains.svg";
+        } if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 3) {
+            return "./files/three-trains.svg";
+        } if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 4) {
+            return "./files/four-trains.svg";
+        } else {
+            return "";
+        }
+    }
+    
 }
 
 function getHotel(cardData, donutNumber) {
@@ -182,7 +216,7 @@ function getHotel(cardData, donutNumber) {
 }
 
 function getAngle(cardData) {
-    return 2 * Math.PI * parseInt(cardData.data.value["card_index"]) / 28;
+    return 2 * Math.PI * parseInt(cardData.data.value["ID"]) / 28;
 }
 
 function getRadius(cardData) {
@@ -199,7 +233,7 @@ function createInnerDonut(svg, data_ready, innerRadius, outerRadius, donutNumber
         .enter();
     houses    
         .append('path')
-        .attr('id', function(d) { return 'strategyRing' + donutNumber + "card" + d.data.value['card_index']; })
+        .attr('id', function(d) { return 'strategyRing' + donutNumber + "card" + d.data.value['ID']; })
         .attr('d', arc)
         .attr("transform", "translate(" + 710 + "," + 710 + ")")
         .attr('fill', function(d) { return shouldBuy(d, donutNumber); })
@@ -209,17 +243,17 @@ function createInnerDonut(svg, data_ready, innerRadius, outerRadius, donutNumber
         .on("mouseout", mouseOut);
     houses.append("text")
         .data(data_ready)
-        .attr("x", 5)
+        .attr("x", 7 * (4 - donutNumber))
         .attr("dy", 20)
         .append("textPath") //append a textPath to the text element
-        .attr("xlink:href", function(d) { return '#strategyRing' + donutNumber + "card" + d.data.value['card_index']; })
+        .attr("xlink:href", function(d) { return '#strategyRing' + donutNumber + "card" + d.data.value['ID']; })
         .text(function (d) { return getStrategyLabelText(d, donutNumber);});
     houses
         .append("g")   
         .attr("transform", function(d) {
             var _d = arc.centroid(d);
             _d[0] = _d[0] + 680;	//multiply by a constant factor
-            _d[1] = _d[1] + 690;	//multiply by a constant factor
+            _d[1] = _d[1] + 680;	//multiply by a constant factor
             return "translate(" + _d + ")";
         })
         .append("svg:image")
@@ -251,7 +285,7 @@ function createProbabilityLine(svg, data_ready, innerRadius, outerRadius) {
     var completeData = [...data_ready];
     var lastElement = {};
     Object.assign(lastElement, completeData[0]);
-    lastElement["card_index"] = 28;
+    lastElement["ID"] = 28;
     completeData.push(lastElement);
     probabilityLine = svg
         .selectAll('arc')
@@ -267,12 +301,10 @@ function createProbabilityLine(svg, data_ready, innerRadius, outerRadius) {
 }
 
 var country = getParameterByName("country") == undefined ? "singapore" : getParameterByName("country");
-console.log(getParameterByName("country"));
-console.log(getParameterByName("strategy"));
 d3.json("https://monopoly-nus.appspot.com/api/locations/" + country).then( propertyData => {
-    d3.json("https://monopoly-nus.appspot.com/api/basic/strategy/3").then( strategy3Data => {
+    d3.json("https://monopoly-nus.appspot.com/api/basic/strategy/2").then( strategy3Data => {
         d3.json("https://monopoly-nus.appspot.com/api/basic/strategy/4").then( strategy4Data => {
-            d3.json("https://monopoly-nus.appspot.com/api/basic/strategy/5").then( strategy5Data => {
+            d3.json("https://monopoly-nus.appspot.com/api/basic/strategy/6").then( strategy5Data => {
                 buildCircularChart(
                     propertyData.locations, 
                     [strategy3Data.locations, strategy4Data.locations, strategy5Data.locations]
@@ -305,21 +337,20 @@ function buildCircularChart(properties, strategies) {
     }
     var cardData = properties.filter(isPurchaseableCard);
     for (let step = 0; step < cardData.length; step++) {
-        cardData[step]["card_index"] = step;
+        cardData[step]["ID"] = step;
     }
     var labelCard = {
-        "card_index": -1,
+        "ID": -1,
         "is_label_card": true,
         "property_color_label": "Colour of Property",
         "property_name_label": "Name of Property",
         "strategy_labels": [
             "3 players",
-            "4 players",
-            "5 players"
+            "5 players",
+            "7 players"
         ]
     }
     cardData.unshift(labelCard);
-    console.log(cardData);
 
     // Compute the position of each group on the pie:
     var pie = d3.pie()
@@ -327,12 +358,14 @@ function buildCircularChart(properties, strategies) {
     var data_ready = pie(d3.entries(cardData))
 
     // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
+    
     var outerRing = svg
         .selectAll('whatever')
         .data(data_ready)
-        .enter()
-        .append('path')
-        .attr('id', function(d) { return 'outerRing' + d.data.value['card_index']; })
+        .enter();
+    
+    outerRing.append('path')
+        .attr('id', function(d) { return 'outerRing' + d.data.value['ID']; })
         .attr('d', d3.arc()
             .innerRadius(670)         // This is the size of the donut hole
             .outerRadius(700)
@@ -345,12 +378,12 @@ function buildCircularChart(properties, strategies) {
         .on("mouseover", mouseOver)
         .on("mouseout", mouseOut);
         
-    svg.append("text")
+    outerRing.append("text")
         .data(data_ready)
-        .attr("x", 15)
+        .attr("x", getPropertyLabelTextOffset)
         .attr("dy", 20)
         .append("textPath") //append a textPath to the text element
-        .attr("xlink:href", function(d) { return '#outerRing' + d.data.value['card_index']; }) //place the ID of the path here
+        .attr("xlink:href", function(d) { return '#outerRing' + d.data.value['ID']; }) //place the ID of the path here
         .text(getPropertyColorLabelText);
 
     svg
@@ -358,7 +391,7 @@ function buildCircularChart(properties, strategies) {
         .data(data_ready)
         .enter()
         .append('path')
-        .attr('id', function(d) { return 'innerRing' + d.data.value['card_index']; })
+        .attr('id', function(d) { return 'innerRing' + d.data.value['ID']; })
         .attr('d', d3.arc()
             .innerRadius(600)         // This is the size of the donut hole
             .outerRadius(670)
@@ -375,7 +408,7 @@ function buildCircularChart(properties, strategies) {
         .attr("x", 30)
         .attr("dy", 40)
         .append("textPath") //append a textPath to the text element
-        .attr("xlink:href", function(d) { return '#innerRing' + d.data.value['card_index']; }) //place the ID of the path here
+        .attr("xlink:href", function(d) { return '#innerRing' + d.data.value['ID']; }) //place the ID of the path here
         .text(getStrategyText);
 
     createInnerDonut(svg, data_ready, 500, 600, 0);
@@ -385,23 +418,38 @@ function buildCircularChart(properties, strategies) {
 }
 
 function getPropertyColorLabelText(cardData) {
-    console.log("getPropertyColorLabelText");
     if (cardData.data.value["is_label_card"]) {
-        console.log(cardData.data.value["property_color_label"]);
-        return cardData.data.value["property_color_label"];
+        return cardData.data.value["property_name_label"];
+    } else {
+        if (cardData.data.value["Name"].length >= 16) {
+            return cardData.data.value["Name"].substring(0, 16) + "..";
+        } else {
+            return cardData.data.value["Name"];
+        }
+        
+    }
+}
+
+function getPropertyLabelTextOffset(cardData) {
+    console.log("getPropertyLabelTextOffset");
+    console.log(cardData.data.value["Name"]);
+    if (cardData.data.value["is_label_card"]) {
+        return 15;
+    } 
+    if (cardData.data.value["Name"].length >= 16) {
+        return 15;
+    } else {
+        return (16 - cardData.data.value["Name"].length) * 7;
     }
 }
 
 function getStrategyLabelText(cardData, donutNumber) {
-    console.log("getStrategyLabelText");
     if (cardData.data.value["is_label_card"]) {
-        console.log(cardData.data.value["strategy_labels"][donutNumber]);
         return cardData.data.value["strategy_labels"][donutNumber];
     }
 }
 
 function getStrategyText(cardData) {
-    console.log("getStrategyText");
     if (cardData.data.value["is_label_card"]) {
         return "Strategy For";
     }
