@@ -1,7 +1,3 @@
-// Example 1
-
-
-// Example 2
 
 var probabilities1 = Array.from({length: 40}, () => Math.random());
 var probabilities2 = Array.from({length: 40}, () => Math.random());
@@ -176,66 +172,6 @@ function shouldBuy(cardData, donutNumber) {
     return d3.interpolateGreens(0.5);
 }
 
-function getHouses(cardData, donutNumber) {
-    if (cardData.data.value["is_label_card"]) {
-        return;
-    }
-    if (cardData.data.value["Type"] == "Street") {
-        if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 1) {
-            return "./files/one-home.svg";
-        } if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 2) {
-            return "./files/two-homes.svg";
-        } if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 3) {
-            return "./files/three-homes.svg";
-        } if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 4) {
-            return "./files/four-homes.svg";
-        } else {
-            return "";
-        }
-    }
-    if (cardData.data.value["Type"] == "Railroad") {
-        if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 1) {
-            return "./files/one-train.svg";
-        } if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 2) {
-            return "./files/two-trains.svg";
-        } if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 3) {
-            return "./files/three-trains.svg";
-        } if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 4) {
-            return "./files/four-trains.svg";
-        } else {
-            return "";
-        }
-    }
-    
-}
-
-function getIcons(cardData, donutNumber) { 
-    if (cardData.data.value["is_label_card"]) {
-        return;
-    }
-    var icon = "\uf015";
-    if (cardData.data.value["Type"] == "Street") {
-        icon = "\uf015";
-    }
-    if (cardData.data.value["Type"] == "Railroad") {
-        icon = "\uf239";
-    }
-    
-    if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 1) {
-        return icon;
-    } if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 2) {
-        return icon + " " + icon;
-    } if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 3) {
-        return icon + " " + icon + " " + icon;
-    } if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 4) {
-        return icon + " " + icon + " " + icon + " " + icon;
-    } if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 5) {
-        return "\uf0f7";
-    } else {
-        return "";
-    }
-}
-
 function getIcons(cardData, donutNumber, lineNumber) { 
     if (cardData.data.value["is_label_card"]) {
         return;
@@ -270,15 +206,6 @@ function getIcons(cardData, donutNumber, lineNumber) {
     
 }
 
-function getIconsSpacing(cardData, donutNumber) {
-    var recommendation = 1;
-    if (cardData.data.value["strategies"] != undefined 
-        && cardData.data.value["strategies"][donutNumber] != undefined) {
-        recommendation = cardData.data.value["strategies"][donutNumber]["recommendation"]
-    }
-    return 7 * (4 - donutNumber) + 8 * (3 - recommendation);
-}
-
 function getIconsSpacing(cardData, donutNumber, lineNumber) {
     var recommendation = 1;
     if (cardData.data.value["strategies"] != undefined 
@@ -286,17 +213,6 @@ function getIconsSpacing(cardData, donutNumber, lineNumber) {
         recommendation = cardData.data.value["strategies"][donutNumber]["recommendation"]
     }
     return 7 * (4 - donutNumber) + 9 * (3 - recommendation + (lineNumber - 1) * 2);
-}
-
-function getHotel(cardData, donutNumber) {
-    if (cardData.data.value["is_label_card"]) {
-        return;
-    }
-    if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 5) {
-        return "./files/hotel.svg";
-    } else {
-        return "";
-    }
 }
 
 function getAngle(cardData) {
@@ -334,21 +250,6 @@ function createInnerDonut(svg, data_ready, innerRadius, outerRadius, donutNumber
         .append("textPath") //append a textPath to the text element
         .attr("xlink:href", function(d) { return '#strategyRing' + donutNumber + "card" + d.data.value['ID']; })
         .text(function (d) { return getStrategyLabelText(d, donutNumber);});
-    // houses
-    //     .append("g")   
-    //     .attr("transform", function(d) {
-    //         var _d = arc.centroid(d);
-    //         _d[0] = _d[0] + 680;	//multiply by a constant factor
-    //         _d[1] = _d[1] + 680;	//multiply by a constant factor
-    //         return "translate(" + _d + ")";
-    //     })
-    //     .append("svg:image")
-    //     // .attr("xlink:href", "#delete")
-    //     .attr("xlink:href", function(d) { return getHouses(d, donutNumber); })
-    //     .attr("width", 70)
-    //     .attr("height", 70)
-    //     .on("mouseover", mouseOver)
-    //     .on("mouseout", mouseOut);
         
     houses.append("text")
         .attr("font-family","FontAwesome")
@@ -480,7 +381,6 @@ function buildCircularChart(properties, strategies) {
     createInnerDonut(svg, data_ready, 560, 660, 0);
     createInnerDonut(svg, data_ready, 460, 560, 1);
     createInnerDonut(svg, data_ready, 360, 460, 2);
-    // createProbabilityLine(svg, data_ready, 200, 250);
 }
 
 function getPropertyColorLabelText(cardData) {
