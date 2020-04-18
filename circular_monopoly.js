@@ -156,17 +156,21 @@ function shouldBuy(cardData, donutNumber) {
     if (cardData.data.value["is_label_card"]) {
         return "White";
     }
-    if (cardData.data.value["strategies"][donutNumber]["recommendation"] <= 0) {
+    return recommendationColour(cardData.data.value["strategies"][donutNumber]["recommendation"]);
+}
+
+function recommendationColour(recommendation) {
+    if (recommendation <= 0) {
         return d3.interpolateReds(0.7);
-    } else if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 1) {
+    } else if (recommendation == 1) {
         return d3.interpolateGreens(0.2);
-    } else if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 2) {
+    } else if (recommendation == 2) {
         return d3.interpolateGreens(0.4);
-    } else if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 3) {
+    } else if (recommendation == 3) {
         return d3.interpolateGreens(0.5);
-    } else if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 4) {
+    } else if (recommendation == 4) {
         return d3.interpolateGreens(0.6);
-    } else if (cardData.data.value["strategies"][donutNumber]["recommendation"] >= 5) {
+    } else if (recommendation >= 5) {
         return d3.interpolateGreens(0.7);
     }
     return d3.interpolateGreens(0.5);
@@ -397,8 +401,6 @@ function getPropertyColorLabelText(cardData) {
 }
 
 function getPropertyLabelTextOffset(cardData) {
-    console.log("getPropertyLabelTextOffset");
-    console.log(cardData.data.value["Name"]);
     if (cardData.data.value["is_label_card"]) {
         return 10;
     } 
@@ -430,3 +432,35 @@ function getParameterByName(name, url) {
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
+
+
+var legendSvg = d3.select("#drawhere")
+
+// create a list of keys
+var keys = [-1, 0, 1, 2, 3]
+var labels = ["Not Recommended", "Can Consider", "Recommended", "Strongly Recommended", "Very Strongly Recommended"]
+
+
+var size = 25
+legendSvg.selectAll("mydots")
+  .data(keys)
+  .enter()
+  .append("rect")
+    .attr("x", 1500)
+    .attr("y", function(d,i){ return 100 + i*(size+5)})
+    .attr("width", size)
+    .attr("height", size)
+    .style("fill", function(d){ console.log(d); return recommendationColour(d + 1)})
+
+// Add one dot in the legend for each name.
+legendSvg.selectAll("mylabels")
+  .data(labels)
+  .enter()
+  .append("text")
+    .attr("font-family", "Oswald")
+    .attr("font-size", "1.3em")
+    .attr("x", 1500 + size*1.4)
+    .attr("y", function(d,i){ return 100 + i*(size+5) + (size/2)})
+    .text(function(d){ return d})
+    .attr("text-anchor", "left")
+    .style("alignment-baseline", "middle")
