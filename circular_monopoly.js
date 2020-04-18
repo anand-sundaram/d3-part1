@@ -139,15 +139,15 @@ function getColor(cardData) {
     }
     var color = cardData.data.value["Color"];
     if (color == "Brown (Dark Purple)") {
-        color = "Brown";
+        return '#A020F0';
     } else if (color == "Dark Blue") {
-        color = "Indigo";
+        return "DarkBlue";
     } else if (color == "Light Blue") {
-        color = "Blue";
+        return '#ADD8E6'
     } else if (color == "Green") {
-        color = "Lawngreen";
+        return "Green";
     } else if (color == undefined || color.trim() == "") {
-        color = "White";
+        return "White";
     }
     return color;
 }
@@ -268,7 +268,6 @@ function createInnerDonut(svg, data_ready, innerRadius, outerRadius, donutNumber
         .on("mouseover", mouseOver)
         .on("mouseout", mouseOut)
         .append("tspan").text(function(d) { return getIcons(d, donutNumber, 2); }).attr("x", function(d) { return getIconsSpacing(d, donutNumber, 2); }).attr("dy", 35)
-        .on("mouseover", mouseOver)
         .on("mouseout", mouseOut);
 }
 
