@@ -1,19 +1,15 @@
-
-var probabilities1 = Array.from({length: 40}, () => Math.random());
-var probabilities2 = Array.from({length: 40}, () => Math.random());
-
-var propertyWidth = 270;
-var propertyHeight = 300;
-var propertyX = 580;
-var propertyY = 550;
+var propertyWidth = 400;
+var propertyHeight = 500;
+var propertyX = 2600;
+var propertyY = 1020;
 
 var minProbability = 0;
 var maxProbability = 0;
 
 var svg = d3.select("body")
     .append("svg")
-    .attr("height", 3000)
-    .attr("width", 3000)
+    .attr("height", 3100)
+    .attr("width", 3100)
     .attr("id", "drawhere")
 
 var property = d3.select("#drawhere")
@@ -41,24 +37,24 @@ var propertyName = d3.select("#drawhere")
     .attr("font-family", "Oswald")
     .attr("id", "propertyName")
     .attr("x", propertyX + propertyWidth/2)
-    .attr("y", propertyY + 27)
-    .attr("font-size", "1.5em")
+    .attr("y", propertyY + 35)
+    .attr("font-size", "2em")
     .attr("text-anchor", "middle")
     .style("visibility", "hidden");
 var propertyRents = d3.select("#drawhere")
     .append("text")
     .attr("font-family", "Oswald")
-    .attr("font-size", "1.3em")
+    .attr("font-size", "2em")
     .attr("id", "propertyRents")
     .attr("text-anchor", "middle")
     .attr("x", propertyX + propertyWidth/2)
-    .attr("y", propertyY + 40)
+    .attr("y", propertyY + 80)
     .style("visibility", "hidden");
 var propertyStats = d3.select("#drawhere")
     .append("text")
     .attr("font-family", "Oswald")
     .attr("id", "propertyStats")
-    .attr("font-size", "1.3em")
+    .attr("font-size", "2em")
     .attr("text-anchor", "middle")
     .attr("x", propertyX + propertyWidth/2)
     .attr("y", propertyY + propertyHeight - 50)
@@ -72,39 +68,39 @@ function mouseOver(cardData) {
     propertyColour.style("fill", getColor(cardData)).style("opacity", 0.5);
     if (cardData.data.value["Type"] == "Street") {
         if (cardData.data.value["Rent"] != undefined) {
-            propertyRents.append("tspan").text("Rent: " + cardData.data.value["Rent"][0]).attr("x", propertyX + propertyWidth/2).attr("dy", 25);
+            propertyRents.append("tspan").text("Rent: " + cardData.data.value["Rent"][0]).attr("x", propertyX + propertyWidth/2).attr("dy", 40);
         }
         if (cardData.data.value["Rent"] != undefined && cardData.data.value["Rent"].length > 1) {
-            propertyRents.append("tspan").text("Rent with 1 House: " + cardData.data.value["Rent"][1]).attr("x", propertyX + propertyWidth/2).attr("dy", 25);
+            propertyRents.append("tspan").text("Rent with 1 House: " + cardData.data.value["Rent"][1]).attr("x", propertyX + propertyWidth/2).attr("dy", 40);
         }
         if (cardData.data.value["Rent"] != undefined && cardData.data.value["Rent"].length > 2) {
-            propertyRents.append("tspan").text("Rent with 2 Houses: " + cardData.data.value["Rent"][2]).attr("x", propertyX + propertyWidth/2).attr("dy", 25);
+            propertyRents.append("tspan").text("Rent with 2 Houses: " + cardData.data.value["Rent"][2]).attr("x", propertyX + propertyWidth/2).attr("dy", 40);
         }
         if (cardData.data.value["Rent"] != undefined && cardData.data.value["Rent"].length > 3) {
-            propertyRents.append("tspan").text("Rent with 3 Houses: " + cardData.data.value["Rent"][3]).attr("x", propertyX + propertyWidth/2).attr("dy", 25);
+            propertyRents.append("tspan").text("Rent with 3 Houses: " + cardData.data.value["Rent"][3]).attr("x", propertyX + propertyWidth/2).attr("dy", 40);
         }
         if (cardData.data.value["Rent"] != undefined && cardData.data.value["Rent"].length > 4) {
-            propertyRents.append("tspan").text("Rent with 4 Houses: " + cardData.data.value["Rent"][4]).attr("x", propertyX + propertyWidth/2).attr("dy", 25);
+            propertyRents.append("tspan").text("Rent with 4 Houses: " + cardData.data.value["Rent"][4]).attr("x", propertyX + propertyWidth/2).attr("dy", 40);
         }
         if (cardData.data.value["Rent"] != undefined && cardData.data.value["Rent"].length > 5) {
-            propertyRents.append("tspan").text("Rent with Hotel: " + cardData.data.value["Rent"][5]).attr("x", propertyX + propertyWidth/2).attr("dy", 25);
+            propertyRents.append("tspan").text("Rent with Hotel: " + cardData.data.value["Rent"][5]).attr("x", propertyX + propertyWidth/2).attr("dy", 40);
         }
     }
     if (cardData.data.value["Type"] == "Railroad") {
         if (cardData.data.value["Rent"] != undefined) {
-            propertyRents.append("tspan").text("Rent: " + cardData.data.value["Rent"][0]).attr("x", propertyX + propertyWidth/2).attr("dy", 25);
+            propertyRents.append("tspan").text("Rent: " + cardData.data.value["Rent"][0]).attr("x", propertyX + propertyWidth/2).attr("dy", 40);
         }
         if (cardData.data.value["Rent"] != undefined && cardData.data.value["Rent"].length > 1) {
-            propertyRents.append("tspan").text("Rent with 1 other railroad: " + cardData.data.value["Rent"][1]).attr("x", propertyX + propertyWidth/2).attr("dy", 25);
+            propertyRents.append("tspan").text("Rent with 1 other railroad: " + cardData.data.value["Rent"][1]).attr("x", propertyX + propertyWidth/2).attr("dy", 40);
         }
         if (cardData.data.value["Rent"] != undefined && cardData.data.value["Rent"].length > 2) {
-            propertyRents.append("tspan").text("Rent with 2 other railroads: " + cardData.data.value["Rent"][2]).attr("x", propertyX + propertyWidth/2).attr("dy", 25);
+            propertyRents.append("tspan").text("Rent with 2 other railroads: " + cardData.data.value["Rent"][2]).attr("x", propertyX + propertyWidth/2).attr("dy", 40);
         }
         if (cardData.data.value["Rent"] != undefined && cardData.data.value["Rent"].length > 3) {
-            propertyRents.append("tspan").text("Rent with all the railroads: " + cardData.data.value["Rent"][3]).attr("x", propertyX + propertyWidth/2).attr("dy", 25);
+            propertyRents.append("tspan").text("Rent with all the railroads: " + cardData.data.value["Rent"][3]).attr("x", propertyX + propertyWidth/2).attr("dy", 40);
         }
     }
-    propertyStats.append("tspan").text("Probability of landing: " + cardData.data.value["p_landings"].toFixed(3)).attr("x", propertyX + propertyWidth/2).attr("dy", 25);
+    propertyStats.append("tspan").text("Probability of landing: " + cardData.data.value["p_landings"].toFixed(3)).attr("x", propertyX + propertyWidth/2).attr("dy", 40);
     propertyRents.style("visibility", "visible");
     propertyStats.style("visibility", "visible");
     propertyColour.style("visibility", "visible");
@@ -160,20 +156,33 @@ function shouldBuy(cardData, donutNumber) {
 }
 
 function recommendationColour(recommendation) {
+    // if (recommendation <= 0) {
+    //     return d3.interpolateReds(0.7);
+    // } else if (recommendation == 1) {
+    //     return d3.interpolateGreens(0.2);
+    // } else if (recommendation == 2) {
+    //     return d3.interpolateGreens(0.4);
+    // } else if (recommendation == 3) {
+    //     return d3.interpolateGreens(0.5);
+    // } else if (recommendation == 4) {
+    //     return d3.interpolateGreens(0.6);
+    // } else if (recommendation >= 5) {
+    //     return d3.interpolateGreens(0.7);
+    // }
+    // return d3.interpolateGreens(0.5);
     if (recommendation <= 0) {
-        return d3.interpolateReds(0.7);
+        return d3.interpolateReds(0.10);
     } else if (recommendation == 1) {
-        return d3.interpolateGreens(0.2);
+        return d3.interpolateReds(0.25);
     } else if (recommendation == 2) {
-        return d3.interpolateGreens(0.4);
+        return d3.interpolateReds(0.35);
     } else if (recommendation == 3) {
-        return d3.interpolateGreens(0.5);
+        return d3.interpolateReds(0.45);
     } else if (recommendation == 4) {
-        return d3.interpolateGreens(0.6);
+        return d3.interpolateReds(0.55);
     } else if (recommendation >= 5) {
-        return d3.interpolateGreens(0.7);
+        return d3.interpolateReds(0.65);
     }
-    return d3.interpolateGreens(0.5);
 }
 
 function getIcons(cardData, donutNumber, lineNumber) { 
@@ -190,7 +199,8 @@ function getIcons(cardData, donutNumber, lineNumber) {
     if (lineNumber == 1) {
         if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 1) {
             return icon;
-        } if (cardData.data.value["strategies"][donutNumber]["recommendation"] >= 2) {
+        } if (cardData.data.value["strategies"][donutNumber]["recommendation"] >= 2 
+    && cardData.data.value["strategies"][donutNumber]["recommendation"] < 5) {
             return icon + " " + icon;
         } if (cardData.data.value["strategies"][donutNumber]["recommendation"] == 5) {
             return "\uf0f7";
@@ -216,7 +226,17 @@ function getIconsSpacing(cardData, donutNumber, lineNumber) {
         && cardData.data.value["strategies"][donutNumber] != undefined) {
         recommendation = cardData.data.value["strategies"][donutNumber]["recommendation"]
     }
-    return 7 * (4 - donutNumber) + 9 * (3 - recommendation + (lineNumber - 1) * 2);
+    if (recommendation == 1 || recommendation == 5) {
+        return 10 * (donutNumber + 3)
+    }
+    if (recommendation == 2 || recommendation == 4) {
+        return 10 * (donutNumber + 3) - 9
+    }
+    if (lineNumber == 2) {
+        return 10 * (donutNumber + 3) + 9;
+    }
+    return 10 * (donutNumber + 3) - 9;
+        
 }
 
 function getAngle(cardData) {
@@ -239,7 +259,7 @@ function createInnerDonut(svg, data_ready, innerRadius, outerRadius, donutNumber
         .append('path')
         .attr('id', function(d) { return 'strategyRing' + donutNumber + "card" + d.data.value['ID']; })
         .attr('d', arc)
-        .attr("transform", "translate(" + 710 + "," + 710 + ")")
+        .attr("transform", "translate(" + 1240 + "," + 1240 + ")")
         .attr('fill', function(d) { return shouldBuy(d, donutNumber); })
         .attr("stroke", "black")
         .style("stroke-width", "1px")
@@ -247,9 +267,9 @@ function createInnerDonut(svg, data_ready, innerRadius, outerRadius, donutNumber
         .on("mouseout", mouseOut);
     houses.append("text")
         .attr("font-family", "Oswald")
-        .attr("font-size", "1.3em")
+        .attr("font-size", "1.5em")
         .data(data_ready)
-        .attr("x", 7 * (4 - donutNumber))
+        .attr("x", 2 ^ donutNumber + 10 * (donutNumber + 1))
         .attr("dy", 30)
         .append("textPath") //append a textPath to the text element
         .attr("xlink:href", function(d) { return '#strategyRing' + donutNumber + "card" + d.data.value['ID']; })
@@ -259,7 +279,7 @@ function createInnerDonut(svg, data_ready, innerRadius, outerRadius, donutNumber
         .attr("font-family","FontAwesome")
         .attr('font-size', function(d) { return '30px';} )
         .data(data_ready)
-        .attr("x", function(d) { return getIconsSpacing(d, donutNumber); })
+        .attr("x", function(d) { return getIconsSpacing(d, donutNumber, 0); })
         .attr("dy", 70)
         .append("textPath") //append a textPath to the text element
         .attr("xlink:href", function(d) { return '#strategyRing' + donutNumber + "card" + d.data.value['ID']; })
@@ -271,37 +291,32 @@ function createInnerDonut(svg, data_ready, innerRadius, outerRadius, donutNumber
         .on("mouseout", mouseOut);
 }
 
-function createProbabilityLine(svg, data_ready, innerRadius, outerRadius) {
-    var arc = d3.arc()
-    	.outerRadius(outerRadius)
-    	.innerRadius(innerRadius);
-    var completeData = [...data_ready];
-    var lastElement = {};
-    Object.assign(lastElement, completeData[0]);
-    lastElement["ID"] = 28;
-    completeData.push(lastElement);
-    probabilityLine = svg
-        .selectAll('arc')
-        .data(completeData)
-        .enter();
-    probabilityLine    
-        .append('path')
-        .datum(completeData)
-        .attr("transform", "translate(" + 710 + "," + 710 + ")")
-        .attr("fill", "none")
-        .attr("stroke", "#4099ff")
-        .attr("d", line);
-}
 
 var country = getParameterByName("country") == undefined ? "singapore" : getParameterByName("country");
 d3.json("https://monopoly-nus.appspot.com/api/locations/" + country).then( propertyData => {
-    d3.json("https://monopoly-nus.appspot.com/api/basic/strategy/2").then( strategy3Data => {
-        d3.json("https://monopoly-nus.appspot.com/api/basic/strategy/4").then( strategy4Data => {
-            d3.json("https://monopoly-nus.appspot.com/api/basic/strategy/6").then( strategy5Data => {
-                buildCircularChart(
-                    propertyData.locations, 
-                    [strategy3Data.locations, strategy4Data.locations, strategy5Data.locations]
-                );
+    d3.json("https://monopoly-nus.appspot.com/api/basic/strategy/1").then( strategy1Data => {
+        d3.json("https://monopoly-nus.appspot.com/api/basic/strategy/2").then( strategy2Data => {
+            d3.json("https://monopoly-nus.appspot.com/api/basic/strategy/3").then( strategy3Data => {
+                d3.json("https://monopoly-nus.appspot.com/api/basic/strategy/4").then( strategy4Data => {
+                    d3.json("https://monopoly-nus.appspot.com/api/basic/strategy/5").then( strategy5Data => {
+                        d3.json("https://monopoly-nus.appspot.com/api/basic/strategy/6").then( strategy6Data => {
+                            d3.json("https://monopoly-nus.appspot.com/api/basic/strategy/7").then( strategy7Data => {
+                                buildCircularChart(
+                                    propertyData.locations, 
+                                    [
+                                        strategy1Data.locations, 
+                                        strategy2Data.locations, 
+                                        strategy3Data.locations,
+                                        strategy4Data.locations, 
+                                        strategy5Data.locations, 
+                                        strategy6Data.locations,
+                                        strategy7Data.locations
+                                    ]
+                                );
+                            });
+                        });
+                    });
+                });
             });
         });
     });
@@ -338,9 +353,13 @@ function buildCircularChart(properties, strategies) {
         "property_color_label": "Colour of Property",
         "property_name_label": "Name of Property",
         "strategy_labels": [
+            "2 players",
             "3 players",
+            "4 players",
             "5 players",
-            "7 players"
+            "6 players",
+            "7 players",
+            "8 players"
         ]
     }
     cardData.unshift(labelCard);
@@ -356,14 +375,21 @@ function buildCircularChart(properties, strategies) {
         .selectAll('whatever')
         .data(data_ready)
         .enter();
+        
+    var curAngle = 0;
+    var interval = null;
+    var outerRadius = 1200;
+    var innerRadius = outerRadius - 40;
+    var translation = outerRadius + 40;
+    var donutWidth = 120;
     
     outerRing.append('path')
         .attr('id', function(d) { return 'outerRing' + d.data.value['ID']; })
         .attr('d', d3.arc()
-            .innerRadius(660)         // This is the size of the donut hole
-            .outerRadius(700)
+            .innerRadius(1160)         // This is the size of the donut hole
+            .outerRadius(outerRadius)
         )
-        .attr("transform", "translate(" + 710 + "," + 710 + ")")
+        .attr("transform", "translate(" + translation + "," + translation + ")")
         .attr('fill', getColor)
         .attr("stroke", "black")
         .style("stroke-width", "1px")
@@ -373,40 +399,44 @@ function buildCircularChart(properties, strategies) {
         
     outerRing.append("text")
         .attr("font-family", "Oswald")
-        .attr("font-size", "1.3em")
+        .attr("font-size", "1.5em")
         .data(data_ready)
         .attr("x", getPropertyLabelTextOffset)
-        .attr("dy", 25)
+        .attr("dy", 30)
         .append("textPath") //append a textPath to the text element
         .attr("xlink:href", function(d) { return '#outerRing' + d.data.value['ID']; }) //place the ID of the path here
         .text(getPropertyColorLabelText);
 
-    createInnerDonut(svg, data_ready, 560, 660, 0);
-    createInnerDonut(svg, data_ready, 460, 560, 1);
-    createInnerDonut(svg, data_ready, 360, 460, 2);
+    var outerDonutRadius = innerRadius;
+    var innerDonutRadius = innerRadius - donutWidth;
+    for (let donutNumber = 6; donutNumber >= 0; donutNumber--) {
+        createInnerDonut(svg, data_ready, innerDonutRadius, outerDonutRadius, donutNumber);
+        outerDonutRadius = innerDonutRadius;
+        innerDonutRadius = outerDonutRadius - donutWidth;
+    }
 }
 
 function getPropertyColorLabelText(cardData) {
     if (cardData.data.value["is_label_card"]) {
         return cardData.data.value["property_name_label"];
     } else {
-        if (cardData.data.value["Name"].length >= 14) {
-            return cardData.data.value["Name"].substring(0, 14) + "..";
+        return cardData.data.value["Name"];
+        if (cardData.data.value["Name"].length >= 25) {
+            return cardData.data.value["Name"].substring(0, 25) + "..";
         } else {
             return cardData.data.value["Name"];
         }
-        
     }
 }
 
 function getPropertyLabelTextOffset(cardData) {
     if (cardData.data.value["is_label_card"]) {
-        return 10;
+        return 50;
     } 
-    if (cardData.data.value["Name"].length >= 14) {
-        return 13;
+    if (cardData.data.value["Name"].length >= 25) {
+        return 7;
     } else {
-        return (15 - cardData.data.value["Name"].length) * 8;
+        return (25 - cardData.data.value["Name"].length) * 4 + 10;
     }
 }
 
@@ -436,20 +466,20 @@ function getParameterByName(name, url) {
 var legendSvg = d3.select("#drawhere")
 
 // create a list of keys
-var keys = [-1, 0, 1, 2, 3]
-var labels = ["Not Recommended", "Can Consider", "Recommended", "Strongly Recommended", "Very Strongly Recommended"]
+var keys = [-1, 0, 1, 2, 3, 4]
+var labels = ["Not Recommended", "", "", "", "", "Very Strongly Recommended"]
 
 
-var size = 25
+var size = 35
 legendSvg.selectAll("mydots")
   .data(keys)
   .enter()
   .append("rect")
-    .attr("x", 1500)
-    .attr("y", function(d,i){ return 100 + i*(size+5)})
+    .attr("x", 2650)
+    .attr("y", function(d,i){ return 100 + i*(size)})
     .attr("width", size)
     .attr("height", size)
-    .style("fill", function(d){ console.log(d); return recommendationColour(d + 1)})
+    .style("fill", function(d){ return recommendationColour(d + 1)})
 
 // Add one dot in the legend for each name.
 legendSvg.selectAll("mylabels")
@@ -457,9 +487,35 @@ legendSvg.selectAll("mylabels")
   .enter()
   .append("text")
     .attr("font-family", "Oswald")
-    .attr("font-size", "1.3em")
-    .attr("x", 1500 + size*1.4)
-    .attr("y", function(d,i){ return 100 + i*(size+5) + (size/2)})
+    .attr("font-size", "2em")
+    .attr("x", 2650 + size*1.4)
+    .attr("y", function(d,i){ return 100 + i*(size) + (size/2)})
+    .text(function(d){ return d})
+    .attr("text-anchor", "left")
+    .style("alignment-baseline", "middle")
+    
+var iconKeys = ["\uf015", "\uf239", "\uf0f7"];
+var iconLabels = ["House", "Subway", "Hotel"];
+var size = 35
+legendSvg.selectAll("mydots")
+  .data(iconKeys)
+  .enter()
+  .append("text")
+    .attr("font-family","FontAwesome")
+    .attr('font-size', function(d) { return '40px';} )
+    .attr("x", 2350)
+    .attr("y", function(d,i){ return 110 + i*(60) + (size/2)})
+    .text(function(d){ return d})
+
+// Add one dot in the legend for each name.
+legendSvg.selectAll("mylabels")
+  .data(iconLabels)
+  .enter()
+  .append("text")
+    .attr("font-family", "Oswald")
+    .attr("font-size", "2em")
+    .attr("x", 2350 + size*1.4)
+    .attr("y", function(d,i){ return 100 + i*(60) + (size/2)})
     .text(function(d){ return d})
     .attr("text-anchor", "left")
     .style("alignment-baseline", "middle")
